@@ -433,8 +433,21 @@
     function setQueryParam(param, value) {
       const url = new URL(window.location);
       url.searchParams.set(param, value);
-      window.history.replaceState({}, '', url);
+      window.history.pushState({}, '', url);  // Pushes to history (allows "Back" button)
     }
+
+    window.addEventListener('popstate', () => {
+      const currentDay = getQueryParam("day") || days[0].key;
+      
+      document.querySelectorAll(".day-buttons button").forEach(b => b.classList.remove("active"));
+      
+      const matchingBtn = [...document.querySelectorAll(".day-buttons button")].find(
+        btn => btn.textContent === currentDay.slice(8, 10) + "." + currentDay.slice(5, 7)
+      );
+      if (matchingBtn) matchingBtn.classList.add("active");
+
+      renderCalendar(currentDay);
+    });
 
     function renderDayButtons() {
       const container = document.getElementById("dayButtons");
