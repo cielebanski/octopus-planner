@@ -419,23 +419,27 @@
       return h * 60 + m;
     }
 
-    function isFavorite(name) {
-      const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
-      return favs.includes(name);
+    function isFavorite(dateKey, name) {
+      const allFavs = JSON.parse(localStorage.getItem("favoritesByDay") || "{}");
+      const dayFavs = allFavs[dateKey] || [];
+      return dayFavs.includes(name);
     }
 
-    function toggleFavorite(name, icon, card) {
-      let favs = JSON.parse(localStorage.getItem("favorites") || "[]");
-      if (favs.includes(name)) {
-        favs = favs.filter(e => e !== name);
+    function toggleFavorite(dateKey, name, icon, card) {
+      const allFavs = JSON.parse(localStorage.getItem("favoritesByDay") || "{}");
+      const dayFavs = allFavs[dateKey] || [];
+
+      if (dayFavs.includes(name)) {
+        allFavs[dateKey] = dayFavs.filter(e => e !== name);
         card.classList.remove("favorited");
         icon.textContent = "☆";
       } else {
-        favs.push(name);
+        allFavs[dateKey] = [...dayFavs, name];
         card.classList.add("favorited");
         icon.textContent = "★";
       }
-      localStorage.setItem("favorites", JSON.stringify(favs));
+
+      localStorage.setItem("favoritesByDay", JSON.stringify(allFavs));
     }
 
     function getQueryParam(param) {
@@ -565,10 +569,11 @@
 
             const star = document.createElement("span");
             star.className = "star";
-            star.textContent = isFavorite(event.name) ? "★" : "☆";
-            eventDiv.classList.toggle("favorited", isFavorite(event.name));
 
-            star.onclick = () => toggleFavorite(event.name, star, eventDiv);
+            star.textContent = isFavorite(dateKey, event.name) ? "★" : "☆";
+            eventDiv.classList.toggle("favorited", isFavorite(dateKey, event.name));
+
+            star.onclick = () => toggleFavorite(dateKey, event.name, star, eventDiv); 
 
             const title = document.createElement("div");
             title.innerHTML = `<strong>${event.name}</strong><br><small>${event.start} - ${event.end}<br>${event.duration} min</small>`;
