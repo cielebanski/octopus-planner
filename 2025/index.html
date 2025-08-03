@@ -13,14 +13,13 @@
       background-color: #fefcf9;
       color: #111;
       font-size: 16px;
-      display: flex;
-      flex-direction: column;
     }
 
     .page-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
+      height:auto !important; /* real browsers */
+      height:100%; /* IE6: treaded as min-height*/
+      min-height:100%; /* real browsers */
+
     }
 
     @media (max-width: 600px) {
