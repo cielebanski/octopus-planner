@@ -113,7 +113,6 @@
       flex-shrink: 0;
       box-sizing: border-box;
       font-size: 0.7rem;
-      margin-bottom: 1px;
       background: #262626;
     }
     @media (max-width: 600px) {
@@ -160,7 +159,6 @@
       position: relative;
       flex-grow: 1;
       min-width: 0;
-      border-top: 1px solid #ccc;
     }
     .column {
       width: 180px;
@@ -169,6 +167,7 @@
       position: relative;
       flex-shrink: 0;
       box-sizing: border-box;
+      border-top: 1px solid #ccc;
     }
     @media (max-width: 600px) {
       .column {
@@ -278,21 +277,28 @@
       { start: "21:00", name: "13 dni do wakacji + spotkanie z twórcami", location: "Spektrum", end: "22:20", duration: "80" },
       { start: "21:00", name: "Łowca śmierci", location: "Klub B90", end: "22:20", duration: "80" },
       { start: "21:00", name: "Krew bohaterów", location: "HYDRO-MARPP SP. Z O.O.", end: "22:44", duration: "104" },
-      { start: "22:00", name: "DJ set Martwi przed świtem", location: "OCTO BAR OSIEMDZIESIĄTKA", end: "22:44", duration: "90" },
+      { start: "22:00", name: "DJ set Martwi przed świtem", location: "OCTO BAR OSIEMDZIESIĄTKA", end: "?", duration: "90" },
       ],
       "2025-08-06": [
         { start: "14:00", name: "Octopus Shorts – BLOK 4: Fantazja jest od tego", location: "Spektrum", end: "15:27", duration: "87" },
         { start: "15:00", name: "Opowieść rybaka", location: "Multikino, sala nr 10", end: "16:43", duration: "103" },
         { start: "16:00", name: "Lesbijska księżniczka z kosmosu", location: "Spektrum", end: "17:27", duration: "87" },
         { start: "16:00", name: "Ator, walczący orzeł", location: "Klub B90", end: "17:38", duration: "98" },
-        { start: "16:00", name: "Jak wyprodukować horror w Polsce? – panel dyskusyjny", location: "Kino IKM", end: "16:00", duration: "90" },
+        { start: "16:00", name: "Jak wyprodukować horror w Polsce? – panel dyskusyjny", location: "Kino IKM", end: "?", duration: "90" },
         { start: "17:30", name: "Octopus Shorts – BLOK 2: Pod skórą", location: "Multikino, sala nr 10", end: "19:01", duration: "91" },
         { start: "18:00", name: "VHS: na ratunek!", location: "Grid Arthub", end: "18:00", duration: "90" },
-        { start: "18:00", name: "MIŁO boli: rozwój filmu grozy własnym kosztem", location: "Kino IKM", end: "18:00", duration: "90" },
+        { start: "18:00", name: "MIŁO boli: rozwój filmu grozy własnym kosztem", location: "Kino IKM", end: "?", duration: "90" },
         { start: "18:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "19:20", duration: "80" },
         { start: "18:15", name: "Królowe dragu i zombie", location: "Spektrum", end: "19:54", duration: "99" },
         { start: "18:30", name: "Perfect Blue", location: "Klub B90", end: "19:51", duration: "81" },
         { start: "19:00", name: "Stunt Rock", location: "Drizzly Grizzly", end: "20:31", duration: "91" },
+        {
+          name: "Quiz Filmowy",
+          location: "OCTO BAR OSIEMDZIESIĄTKA",
+          start: "19:00",
+          end: "?",
+          duration: "90"
+        },
         { start: "19:30", name: "Błysk diamentu śmierci", location: "Multikino, sala nr 10", end: "20:57", duration: "87" },
         { start: "20:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "21:20", duration: "80" },
         { start: "20:00", name: "Z wnętrza", location: "Kino IKM", end: "21:30", duration: "90" },
@@ -308,10 +314,17 @@
         { start: "14:30", end: "15:42", name: "Good Boy", location: "Spektrum", duration: 72 },
         { start: "15:00", end: "16:24", name: "The Loved Ones", location: "Drizzly Grizzly", duration: 84 },
         { start: "15:00", end: "16:24", name: "The Loved Ones", location: "Drizzly Grizzly", duration: 84 },
-        { start: "16:00", end: "16:00", name: "How To Make A Mark With Your Horror Film – wykład Mike’a Chapmana", location: "Kino IKM", duration: 90 },
+        { start: "16:00", end: "?", name: "How To Make A Mark With Your Horror Film – wykład Mike’a Chapmana", location: "Kino IKM", duration: 90 },
         { start: "16:30", end: "17:58", name: "Octopus Shorts – BLOK 3: Nie bój się zmiany (na gorsze)", location: "Spektrum", duration: 88 },
         { start: "16:30", end: "18:02", name: "Pułapka", location: "Klub B90", duration: 92 },
         { start: "17:00", end: "18:40", name: "Miecz i czarnoksiężnik", location: "Drizzly Grizzly", duration: 100 },
+        {
+          name: "Casting na lektora VHS HELL",
+          start: "17:00",
+          end: "?",
+          duration: 90,
+          location: "OCTO BAR OSIEMDZIESIĄTKA"
+        },
         { start: "17:15", end: "18:47", name: "Ogar Boga", location: "Multikino, sala nr 10", duration: 92 },
         { start: "18:00", end: "19:35", name: "Palacz zwłok", location: "Kino IKM", duration: 95 },
         { start: "18:30", end: "20:47", name: "Diuna", location: "Klub B90", duration: 137 },
@@ -319,7 +332,7 @@
         { start: "19:30", end: "21:38", name: "Alpha", location: "Multikino, sala nr 10", duration: 128 },
         { start: "22:00", end: "23:43", name: "Opowieść rybaka", location: "Spektrum", duration: 103 },
         { start: "22:00", end: "23:12", name: "Pierniczek okrutniczek 2: Mąka pańska", location: "Klub B90", duration: 72 },
-        { start: "22:00", end: "22:00", name: "Gotycka potańcówka. W hołdzie Tomaszowi Beksińskiemu", location: "Drizzly Grizzly", duration: 90 },
+        { start: "22:00", end: "?", name: "Gotycka potańcówka. W hołdzie Tomaszowi Beksińskiemu", location: "Drizzly Grizzly", duration: 90 },
         { start: "22:00", end: "23:36", name: "Rambo II", location: "Olivia Garden", duration: 96 },
         { start: "22:15", end: "23:42", name: "Octopus Shorts – BLOK 5: Śmiech przez zęby", location: "Multikino, sala nr 10", duration: 87 },
         { start: "23:59", end: "01:15", name: "Amputacja", location: "Klub B90", duration: 76 }
@@ -346,26 +359,26 @@
         { start: "20:15",	name: "Oblężenie bazy Gloria + spotkanie z Brianem Trenchardem-Smithem", location:	"Drizzly Grizzly",	end: "21:54", duration: 99 },
         { start: "21:00",	name: "Stracone pokolenie + performans Ali Urwał", location:	"Spektrum",	end: "22:25", duration: 85 },
         { start: "21:45",	name: "Zza grobu", location:	"Multikino, sala nr 9",	end: "23:45", duration: 120 },
-        { start: "22:00",	name: "DJ set DiV4", location:	"OCTO BAR OSIEMDZIESIĄTKA",	end: "22:00", duration: 90 },
+        { start: "22:00",	name: "DJ set DiV4", location:	"OCTO BAR OSIEMDZIESIĄTKA",	end: "?", duration: 90 },
         { start: "22:00",	name: "Together", location:	"Multikino, sala nr 10",	end: "23:42", duration: 102 },
         { start: "23:59",	name: "Oko za oko", location:	"Spektrum",	end: "01:40", duration: 101 }
       ],
       "2025-08-09": [
-        { start: "09:00", name: "Ośmiorniczki – zestaw krótkich metraży", location: "Spektrum", end: "09:40", duration: 40 },
+        { start: "12:45", name: "Ośmiorniczki – z. krótkich metraży", location: "Spektrum", end: "13:25", duration: 40 },
         { start: "13:00", name: "Falcon Lake", location: "Multikino, sala nr 9", end: "14:40", duration: 100 },
         { start: "13:15", name: "Octopus Shorts – BLOK 3: Nie bój się zmiany", location: "Multikino, sala nr 10", end: "14:41", duration: 86 },
         { start: "14:00", name: "Octopus Shorts – BLOK 2: Pod skórą", location: "Spektrum", end: "15:30", duration: 90 },
         { start: "14:00", name: "Polowanie na indyki + spotkanie z Brianem Trenchardem-Smithem", location: "Klub B90", end: "15:33", duration: 93 },
-        { start: "14:00", name: "Podbój", location: "Drizzly Grizzly", end: "15:28", duration: 88 },
+        { start: "14:30", name: "Podbój", location: "Drizzly Grizzly", end: "15:58", duration: 88 },
         { start: "15:15", name: "Dom starców", location: "Multikino, sala nr 10", end: "16:42", duration: 87 },
         { start: "15:30", name: "Octopus Shorts – BLOK 4: Fantazja jest od tego", location: "Multikino, sala nr 9", end: "16:53", duration: 83 },
-        { start: "16:00", name: "Jak produkować filmy w Gdańsku? – panel dyskusyjny", location: "IKM (sala warsztatowa)", end: "16:00", duration: 90 },
+        { start: "16:00", name: "Jak produkować filmy w Gdańsku? – panel dyskusyjny", location: "IKM (sala warsztatowa)", end: "?", duration: 90 },
         { start: "16:30", name: "Ogar Boga", location: "Spektrum", end: "18:02", duration: 92 },
         { start: "16:30", name: "Rodzice chrzestni z Tokio", location: "Klub B90", end: "18:02", duration: 92 },
         { start: "16:45", name: "Dziwna podróż: Historia Rocky Horror", location: "Drizzly Grizzly", end: "18:14", duration: 89 },
         { start: "17:30", name: "Błysk diamentu śmierci", location: "Multikino, sala nr 10", end: "18:57", duration: 87 },
         { start: "17:45", name: "Opowieść rybaka", location: "Multikino, sala nr 9", end: "19:28", duration: 103 },
-        { start: "18:00", name: "Kino dziwaczne… wykład Andrzeja Karalusa", location: "Luks Sfera", end: "18:00", duration: 90 },
+        { start: "18:00", name: "Kino dziwaczne… wykład Andrzeja Karalusa", location: "Luks Sfera", end: "?", duration: 90 },
         { start: "18:30", name: "Słodycz", location: "Spektrum", end: "20:03", duration: 93 },
         { start: "19:00", name: "Ten od serca", location: "Drizzly Grizzly", end: "20:57", duration: 117 },
         { start: "19:30", name: "Młody Corey Gorey", location: "Klub B90", end: "21:00", duration: 90 },
@@ -379,7 +392,7 @@
       ],
       "2025-08-10": [
         { start: "13:00", name:	"Niedoręczony list", location:	"Multikino, sala nr 10", end: "14:46", duration:		106 },
-        { start: "13:30", name:	"Spektrum", location:	"Spektrum", end: "15:56", duration:		146 },
+        { start: "13:30", name:	"1941", location:	"Spektrum", end: "15:56", duration:		146 },
         { start: "14:00", name:	"Conan Barbarzyńca", location:	"Kino IKM", end: "16:09", duration:		129 },
         { start: "15:15", name:	"Scala !!! albo niewiarygodnie dziwny wzlot i upadek najdzikszego kina i jak ukształtowało ...", location:	"Drizzly Grizzly", end: "16:51", duration:		96 },
         { start: "15:30", name:	"Zwierzę", location:	"Multikino, sala nr 10", end: "17:08", duration:    98 },
