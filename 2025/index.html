@@ -5,15 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Octopus Planner 2025</title>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       background-color: #fefcf9;
       color: #111;
+      font-size: 16px;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      font-size: 16px;
+    }
+
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     @media (max-width: 600px) {
@@ -21,21 +28,20 @@
         font-size: 14px;
       }
     }
-
+    
     .top-bar {
       justify-content: space-between;
       color: #0f0f0f;
-      position: sticky;
-      top: 0;
-      z-index: 100;
       flex-shrink: 0;
-        padding: 8px 12px;
-
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
     }
     
     @media (min-width: 678px) {
       .top-bar {
         display: flex;
+        flex-direction: row;
         align-items: center;
         padding: 12px 20px;
 
@@ -78,10 +84,9 @@
 
     /* Container for calendar and columns header */
     .calendar-wrapper {
-      flex-grow: 1;
       display: flex;
       flex-direction: column;
-      overflow: scroll;
+      overflow-x: scroll;
       background: #fefcf9;
       margin-bottom: 20px;;
     }
@@ -180,7 +185,7 @@
       right: 10px;
       background-color: #262626;
       color: #fff;
-      font-size: 0.7rem;
+      font-size: 0.625rem;
       padding: 8px 10px;
       border-radius: 4px;
       box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
@@ -201,7 +206,17 @@
       background-color: #ffca0a;
       color: #000;
     }
+
+    footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
     footer {
+      margin-top: auto;
       flex-shrink: 0;
       background: #262626;
       color: #fff;
@@ -210,16 +225,11 @@
       font-size: 0.8rem;
       user-select: none;
     }
-    footer a {
-      color: #fff;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
+  <div class="page-wrapper">
+
   <div class="top-bar">
     <div>
       <img src="https://octopusfilmfestival.com/wp-content/themes/octopus2022/images/logo.png?v=1" alt="Octopus Festival Logo" class="logo">
@@ -247,6 +257,7 @@
       If you see one, let me know.
     </div>
   </footer>
+  </div>
 
   <script>
     const X_PIXEL_PER_15_MIN = 20;
@@ -263,50 +274,50 @@
     // Sample events data
     const eventsByDay = {
       "2025-08-05": [
-      { start: "15:45", name: "Bone Tomahawk", location: "Drizzly Grizzly", end: "17:57", duration: "132" },
-      { start: "16:00", name: "Together", location: "Multikino, sala nr 10", end: "17:42", duration: "102" },
-      { start: "16:00", name: "Zwierzę", location: "Spektrum", end: "17:38", duration: "98" },
-      { start: "18:00", name: "Kobieta-wąż", location: "Kino IKM", end: "19:23", duration: "83" },
-      { start: "18:15", name: "Zniknięcie", location: "Klub B90", end: "20:02", duration: "107" },
-      { start: "18:30", name: "Seans otwarcia: Martwi przed świtem", location: "Multikino, sala nr 10", end: "19:57", duration: "87" },
-      { start: "18:30", name: "Zza grobu", location: "Spektrum", end: "20:30", duration: "120" },
-      { start: "18:30", name: "Nierelane", location: "Drizzly Grizzly", end: "20:05", duration: "95" },
-      { start: "20:00", name: "W blasku księżyca. Spotkanie poświęcone Tomaszowi Beksińskiemu", location: "Kino IKM", end: "20:00", duration: "120" },
-      { start: "20:45", name: "The Primevals", location: "Drizzly Grizzly", end: "22:16", duration: "91" },
-      { start: "21:00", name: "Octopus Shorts – BLOK 1: Jawa na śnie", location: "Multikino, sala nr 10", end: "22:33", duration: "93" },
-      { start: "21:00", name: "13 dni do wakacji + spotkanie z twórcami", location: "Spektrum", end: "22:20", duration: "80" },
-      { start: "21:00", name: "Łowca śmierci", location: "Klub B90", end: "22:20", duration: "80" },
-      { start: "21:00", name: "Krew bohaterów", location: "HYDRO-MARPP SP. Z O.O.", end: "22:44", duration: "104" },
-      { start: "22:00", name: "DJ set Martwi przed świtem", location: "OCTO BAR OSIEMDZIESIĄTKA", end: "?", duration: "90" },
+      { start: "15:45", name: "Bone Tomahawk", location: "Drizzly Grizzly", end: "17:57", duration: 132 },
+      { start: "16:00", name: "Together", location: "Multikino, sala nr 10", end: "17:42", duration: 102 },
+      { start: "16:00", name: "Zwierzę", location: "Spektrum", end: "17:38", duration: 98 },
+      { start: "18:00", name: "Kobieta-wąż", location: "Kino IKM", end: "19:23", duration: 83 },
+      { start: "18:15", name: "Zniknięcie", location: "Klub B90", end: "20:02", duration: 107 },
+      { start: "18:30", name: "Seans otwarcia: Martwi przed świtem", location: "Multikino, sala nr 10", end: "19:57", duration: 87 },
+      { start: "18:30", name: "Zza grobu", location: "Spektrum", end: "20:30", duration: 120 },
+      { start: "18:30", name: "Nierelane", location: "Drizzly Grizzly", end: "20:05", duration: 95 },
+      { start: "20:00", name: "W blasku księżyca. Spotkanie poświęcone Tomaszowi Beksińskiemu", location: "Kino IKM", end: "20:00", duration: 120 },
+      { start: "20:45", name: "The Primevals", location: "Drizzly Grizzly", end: "22:16", duration: 91 },
+      { start: "21:00", name: "Octopus Shorts – BLOK 1: Jawa na śnie", location: "Multikino, sala nr 10", end: "22:33", duration: 93 },
+      { start: "21:00", name: "13 dni do wakacji + spotkanie z twórcami", location: "Spektrum", end: "22:20", duration: 80 },
+      { start: "21:00", name: "Łowca śmierci", location: "Klub B90", end: "22:20", duration: 80 },
+      { start: "21:00", name: "Krew bohaterów", location: "HYDRO-MARPP SP. Z O.O.", end: "22:44", duration: 104 },
+      { start: "22:00", name: "DJ set Martwi przed świtem", location: "OCTO BAR OSIEMDZIESIĄTKA", end: "?", duration: 90 },
       ],
       "2025-08-06": [
-        { start: "14:00", name: "Octopus Shorts – BLOK 4: Fantazja jest od tego", location: "Spektrum", end: "15:27", duration: "87" },
-        { start: "15:00", name: "Opowieść rybaka", location: "Multikino, sala nr 10", end: "16:43", duration: "103" },
-        { start: "16:00", name: "Lesbijska księżniczka z kosmosu", location: "Spektrum", end: "17:27", duration: "87" },
-        { start: "16:00", name: "Ator, walczący orzeł", location: "Klub B90", end: "17:38", duration: "98" },
-        { start: "16:00", name: "Jak wyprodukować horror w Polsce? – panel dyskusyjny", location: "Kino IKM", end: "?", duration: "90" },
-        { start: "17:30", name: "Octopus Shorts – BLOK 2: Pod skórą", location: "Multikino, sala nr 10", end: "19:01", duration: "91" },
-        { start: "18:00", name: "VHS: na ratunek!", location: "Grid Arthub", end: "18:00", duration: "90" },
-        { start: "18:00", name: "MIŁO boli: rozwój filmu grozy własnym kosztem", location: "Kino IKM", end: "?", duration: "90" },
-        { start: "18:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "19:20", duration: "80" },
-        { start: "18:15", name: "Królowe dragu i zombie", location: "Spektrum", end: "19:54", duration: "99" },
-        { start: "18:30", name: "Perfect Blue", location: "Klub B90", end: "19:51", duration: "81" },
-        { start: "19:00", name: "Stunt Rock", location: "Drizzly Grizzly", end: "20:31", duration: "91" },
+        { start: "14:00", name: "Octopus Shorts – BLOK 4: Fantazja jest od tego", location: "Spektrum", end: "15:27", duration: 87 },
+        { start: "15:00", name: "Opowieść rybaka", location: "Multikino, sala nr 10", end: "16:43", duration: 103 },
+        { start: "16:00", name: "Lesbijska księżniczka z kosmosu", location: "Spektrum", end: "17:27", duration: 87 },
+        { start: "16:00", name: "Ator, walczący orzeł", location: "Klub B90", end: "17:38", duration: 98 },
+        { start: "16:00", name: "Jak wyprodukować horror w Polsce? – panel dyskusyjny", location: "Kino IKM", end: "?", duration: 90 },
+        { start: "17:30", name: "Octopus Shorts – BLOK 2: Pod skórą", location: "Multikino, sala nr 10", end: "19:01", duration: 91 },
+        { start: "18:00", name: "VHS: na ratunek!", location: "Grid Arthub", end: "18:00", duration: 90 },
+        { start: "18:00", name: "MIŁO boli: rozwój filmu grozy własnym kosztem", location: "Kino IKM", end: "?", duration: 90 },
+        { start: "18:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "19:20", duration: 80 },
+        { start: "18:15", name: "Królowe dragu i zombie", location: "Spektrum", end: "19:54", duration: 99 },
+        { start: "18:30", name: "Perfect Blue", location: "Klub B90", end: "19:51", duration: 81 },
+        { start: "19:00", name: "Stunt Rock", location: "Drizzly Grizzly", end: "20:31", duration: 91 },
         {
           name: "Quiz Filmowy",
           location: "OCTO BAR OSIEMDZIESIĄTKA",
           start: "19:00",
           end: "?",
-          duration: "90"
+          duration: 90
         },
-        { start: "19:30", name: "Błysk diamentu śmierci", location: "Multikino, sala nr 10", end: "20:57", duration: "87" },
-        { start: "20:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "21:20", duration: "80" },
-        { start: "20:00", name: "Z wnętrza", location: "Kino IKM", end: "21:30", duration: "90" },
-        { start: "21:00", name: "Na podwójnej krawędzi", location: "Klub B90", end: "22:26", duration: "86" },
-        { start: "21:15", name: "Alpha", location: "Spektrum", end: "23:23", duration: "128" },
-        { start: "22:00", name: "Good Boy", location: "Multikino, sala nr 10", end: "23:12", duration: "72" },
-        { start: "22:00", name: "Rambo II", location: "Olivia Garden", end: "23:36", duration: "96" },
-        { start: "23:59", name: "Ballada piłą mechaniczną", location: "Klub B90", end: "01:56", duration: "117" },
+        { start: "19:30", name: "Błysk diamentu śmierci", location: "Multikino, sala nr 10", end: "20:57", duration: 87 },
+        { start: "20:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "21:20", duration: 80 },
+        { start: "20:00", name: "Z wnętrza", location: "Kino IKM", end: "21:30", duration: 90 },
+        { start: "21:00", name: "Na podwójnej krawędzi", location: "Klub B90", end: "22:26", duration: 86 },
+        { start: "21:15", name: "Alpha", location: "Spektrum", end: "23:23", duration: 128 },
+        { start: "22:00", name: "Good Boy", location: "Multikino, sala nr 10", end: "23:12", duration: 72 },
+        { start: "22:00", name: "Rambo II", location: "Olivia Garden", end: "23:36", duration: 96 },
+        { start: "23:59", name: "Ballada piłą mechaniczną", location: "Klub B90", end: "01:56", duration: 117 },
       ],
       "2025-08-07": [
         { start: "13:30", end: "15:28", name: "Industry: przegląd studenckich krótkich metraży", location: "Kino IKM", duration: 118 },
@@ -509,10 +520,11 @@
         ? events.map(e => [parseTimeToMinutes(e.start), parseTimeToMinutes(e.start) + e.duration]).flat()
         : [8 * 60, 18 * 60];
       const minTime = Math.min(...times);
-      const maxTime = Math.min(Math.max(...times), 24 * 60);
+      const maxTime = Math.max(...times);
 
 
-      const totalSlots = Math.ceil((maxTime - minTime) / 15);
+      const paddedMaxTime = maxTime + 60; // add 1h 
+      const totalSlots = Math.ceil((paddedMaxTime - minTime) / 15);
       const totalHeight = totalSlots * X_PIXEL_PER_15_MIN;
 
       // Render locations header
@@ -539,7 +551,10 @@
         const label = document.createElement("div");
         label.className = "time-label";
         label.style.top = `${i * X_PIXEL_PER_15_MIN}px`;
-        label.textContent = `${hour}:${min}`;
+
+        const hourLabel = hour >= 24 ? hour % 24 : hour; // wrap around if hour exceeds 24
+
+        label.textContent = `${hourLabel.toString().padStart(2, "0")}:${min}`;
 
         timeColumn.appendChild(label);
       }
