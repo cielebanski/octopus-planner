@@ -1,1 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Calendar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #fefcf9;
+      color: #111;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-size: 16px;
+    }
 
+    @media (max-width: 600px) {
+      body {
+        font-size: 14px;
+      }
+    }
+
+    .top-bar {
+      justify-content: space-between;
+      color: #0f0f0f;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-shrink: 0;
+        padding: 8px 12px;
+
+    }
+    
+    @media (min-width: 678px) {
+      .top-bar {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+
+      }
+    }
+
+    .logo {
+      height: 50px;
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        height: 28px;
+        margin-bottom: 6px;
+      }
+    }
+
+    .day-buttons button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      background-color: transparent;
+      color: #0f0f0f;
+      border: 2px solid #262626;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease-in-out;
+    }
+    @media (max-width: 600px) {
+      .day-buttons button {
+        margin-right: 4px;
+        font-size: 8px;
+      }
+    }
+    .day-buttons button:hover,
+    .day-buttons button.active {
+      background-color: #262626;
+      color: #fff;
+    }
+
+    /* Container for calendar and columns header */
+    .calendar-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: scroll;
+      background: #fefcf9;
+      margin-bottom: 20px;;
+    }
+
+    /* Header with place names */
+    .locations-header {
+      display: flex;
+      background: #262626;
+      color: #fff;
+      user-select: none;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      padding-left: 40px;
+    }
+
+    @media (max-width: 600px) {
+      .locations-header {
+        font-size: 0.625rem;
+        padding-left: 36px; /* leave space for time labels */
+      }  
+    }
+
+    .location-name {
+      width: 180px;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+      border-left: 1px solid #ccc;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      font-size: 0.7rem;
+      margin-bottom: 1px;
+      background: #262626;
+    }
+    @media (max-width: 600px) {
+      .location-name {
+        font-size: 0.625rem;
+        width: 128px;
+      }  
+    }
+
+    .location-name:first-child {
+      border-left: none;
+    }
+
+    .calendar-container {
+      flex-grow: 1;
+      display: flex;
+      position: relative;
+      background: #fefcf9;
+    }
+
+    .time-column {
+      width: 40px;
+      background: #262626;
+      color: #fff;
+      border-right: 1px solid #ccc;
+      position: relative;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      .time-column {
+        width: 36px;
+      }  
+    }
+
+    .time-label {
+      position: absolute;
+      left: 6px;
+      font-size: 0.625rem;
+      user-select: none;
+    }
+    .columns-container {
+      display: flex;
+      position: relative;
+      flex-grow: 1;
+      min-width: 0;
+      border-top: 1px solid #ccc;
+    }
+    .column {
+      width: 180px;
+      border-left: 1px solid #ccc;
+      background: #fefcf9;
+      position: relative;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+    @media (max-width: 600px) {
+      .column {
+        width: 128px;
+      }  
+    }
+    .event {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      background-color: #262626;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 8px 10px;
+      border-radius: 4px;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-weight: 500;
+      cursor: default;
+      user-select: none;
+    }
+    .event .star {
+      cursor: pointer;
+      font-size: 16px;
+      margin-left: 10px;
+      user-select: none;
+    }
+    .event.favorited {
+      background-color: #ffca0a;
+      color: #000;
+    }
+    footer {
+      flex-shrink: 0;
+      background: #262626;
+      color: #fff;
+      text-align: center;
+      padding: 8px 20px;
+      font-size: 0.8rem;
+      user-select: none;
+    }
+    footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div>
+      <img src="https://octopusfilmfestival.com/wp-content/themes/octopus2022/images/logo.png?v=1" alt="Octopus Festival Logo" class="logo">
+    </div>
+    <div class="day-buttons" id="dayButtons"></div>
+  </div>
+
+  <div class="calendar-wrapper">
+    <div class="locations-header" id="locationsHeader"></div>
+    <div class="calendar-container">
+      <div class="time-column" id="timeColumn"></div>
+      <div class="columns-container" id="columnsContainer"></div>
+    </div>
+  </div>
+
+  <footer>
+    © <span id="footerYear"></span> Nordlys Adrian Cielebański · <a href="mailto:cielebanski@gmail.com">cielebanski@gmail.com</a>
+    <br>
+    <br>
+    <div style="font-size: 0.5rem">
+      Warning: 
+      Meetings that did not have a specific duration were set to 90 minutes.
+      <br>
+      This is a fan art. It may contain mistakes.
+      If you see one, let me know.
+    </div>
+  </footer>
+
+  <script>
+    const X_PIXEL_PER_15_MIN = 20;
+    const days = [
+      { label: "5.08", key: "2025-08-05" },
+      { label: "6.08", key: "2025-08-06" },
+      { label: "7.08", key: "2025-08-07" },
+      { label: "8.08", key: "2025-08-08" },
+      { label: "9.08", key: "2025-08-09" },
+      { label: "10.08", key: "2025-08-10" }
+    ];
+
+
+    // Sample events data
+    const eventsByDay = {
+      "2025-08-05": [
+      { start: "15:45", name: "Bone Tomahawk", location: "Drizzly Grizzly", end: "17:57", duration: "132" },
+      { start: "16:00", name: "Together", location: "Multikino, sala nr 10", end: "17:42", duration: "102" },
+      { start: "16:00", name: "Zwierzę", location: "Spektrum", end: "17:38", duration: "98" },
+      { start: "18:00", name: "Kobieta-wąż", location: "Kino IKM", end: "19:23", duration: "83" },
+      { start: "18:15", name: "Zniknięcie", location: "Klub B90", end: "20:02", duration: "107" },
+      { start: "18:30", name: "Seans otwarcia: Martwi przed świtem", location: "Multikino, sala nr 10", end: "19:57", duration: "87" },
+      { start: "18:30", name: "Zza grobu", location: "Spektrum", end: "20:30", duration: "120" },
+      { start: "18:30", name: "Nierelane", location: "Drizzly Grizzly", end: "20:05", duration: "95" },
+      { start: "20:00", name: "W blasku księżyca. Spotkanie poświęcone Tomaszowi Beksińskiemu", location: "Kino IKM", end: "20:00", duration: "120" },
+      { start: "20:45", name: "The Primevals", location: "Drizzly Grizzly", end: "22:16", duration: "91" },
+      { start: "21:00", name: "Octopus Shorts – BLOK 1: Jawa na śnie", location: "Multikino, sala nr 10", end: "22:33", duration: "93" },
+      { start: "21:00", name: "13 dni do wakacji + spotkanie z twórcami", location: "Spektrum", end: "22:20", duration: "80" },
+      { start: "21:00", name: "Łowca śmierci", location: "Klub B90", end: "22:20", duration: "80" },
+      { start: "21:00", name: "Krew bohaterów", location: "HYDRO-MARPP SP. Z O.O.", end: "22:44", duration: "104" },
+      { start: "22:00", name: "DJ set Martwi przed świtem", location: "OCTO BAR OSIEMDZIESIĄTKA", end: "22:44", duration: "90" },
+      ],
+      "2025-08-06": [
+        { start: "14:00", name: "Octopus Shorts – BLOK 4: Fantazja jest od tego", location: "Spektrum", end: "15:27", duration: "87" },
+        { start: "15:00", name: "Opowieść rybaka", location: "Multikino, sala nr 10", end: "16:43", duration: "103" },
+        { start: "16:00", name: "Lesbijska księżniczka z kosmosu", location: "Spektrum", end: "17:27", duration: "87" },
+        { start: "16:00", name: "Ator, walczący orzeł", location: "Klub B90", end: "17:38", duration: "98" },
+        { start: "16:00", name: "Jak wyprodukować horror w Polsce? – panel dyskusyjny", location: "Kino IKM", end: "16:00", duration: "90" },
+        { start: "17:30", name: "Octopus Shorts – BLOK 2: Pod skórą", location: "Multikino, sala nr 10", end: "19:01", duration: "91" },
+        { start: "18:00", name: "VHS: na ratunek!", location: "Grid Arthub", end: "18:00", duration: "90" },
+        { start: "18:00", name: "MIŁO boli: rozwój filmu grozy własnym kosztem", location: "Kino IKM", end: "18:00", duration: "90" },
+        { start: "18:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "19:20", duration: "80" },
+        { start: "18:15", name: "Królowe dragu i zombie", location: "Spektrum", end: "19:54", duration: "99" },
+        { start: "18:30", name: "Perfect Blue", location: "Klub B90", end: "19:51", duration: "81" },
+        { start: "19:00", name: "Stunt Rock", location: "Drizzly Grizzly", end: "20:31", duration: "91" },
+        { start: "19:30", name: "Błysk diamentu śmierci", location: "Multikino, sala nr 10", end: "20:57", duration: "87" },
+        { start: "20:00", name: "13 dni do wakacji", location: "Bunkier pod W4", end: "21:20", duration: "80" },
+        { start: "20:00", name: "Z wnętrza", location: "Kino IKM", end: "21:30", duration: "90" },
+        { start: "21:00", name: "Na podwójnej krawędzi", location: "Klub B90", end: "22:26", duration: "86" },
+        { start: "21:15", name: "Alpha", location: "Spektrum", end: "23:23", duration: "128" },
+        { start: "22:00", name: "Good Boy", location: "Multikino, sala nr 10", end: "23:12", duration: "72" },
+        { start: "22:00", name: "Rambo II", location: "Olivia Garden", end: "23:36", duration: "96" },
+        { start: "23:59", name: "Ballada piłą mechaniczną", location: "Klub B90", end: "01:56", duration: "117" },
+      ],
+      "2025-08-07": [
+        { start: "13:30", end: "15:28", name: "Industry: przegląd studenckich krótkich metraży", location: "Kino IKM", duration: 118 },
+        { start: "14:30", end: "16:30", name: "Zza grobu", location: "Multikino, sala nr 10", duration: 120 },
+        { start: "14:30", end: "15:42", name: "Good Boy", location: "Spektrum", duration: 72 },
+        { start: "15:00", end: "16:24", name: "The Loved Ones", location: "Drizzly Grizzly", duration: 84 },
+        { start: "15:00", end: "16:24", name: "The Loved Ones", location: "Drizzly Grizzly", duration: 84 },
+        { start: "16:00", end: "16:00", name: "How To Make A Mark With Your Horror Film – wykład Mike’a Chapmana", location: "Kino IKM", duration: 90 },
+        { start: "16:30", end: "17:58", name: "Octopus Shorts – BLOK 3: Nie bój się zmiany (na gorsze)", location: "Spektrum", duration: 88 },
+        { start: "16:30", end: "18:02", name: "Pułapka", location: "Klub B90", duration: 92 },
+        { start: "17:00", end: "18:40", name: "Miecz i czarnoksiężnik", location: "Drizzly Grizzly", duration: 100 },
+        { start: "17:15", end: "18:47", name: "Ogar Boga", location: "Multikino, sala nr 10", duration: 92 },
+        { start: "18:00", end: "19:35", name: "Palacz zwłok", location: "Kino IKM", duration: 95 },
+        { start: "18:30", end: "20:47", name: "Diuna", location: "Klub B90", duration: 137 },
+        { start: "19:30", end: "21:08", name: "Suspiria", location: "Spektrum", duration: 98 },
+        { start: "19:30", end: "21:38", name: "Alpha", location: "Multikino, sala nr 10", duration: 128 },
+        { start: "22:00", end: "23:43", name: "Opowieść rybaka", location: "Spektrum", duration: 103 },
+        { start: "22:00", end: "23:12", name: "Pierniczek okrutniczek 2: Mąka pańska", location: "Klub B90", duration: 72 },
+        { start: "22:00", end: "22:00", name: "Gotycka potańcówka. W hołdzie Tomaszowi Beksińskiemu", location: "Drizzly Grizzly", duration: 90 },
+        { start: "22:00", end: "23:36", name: "Rambo II", location: "Olivia Garden", duration: 96 },
+        { start: "22:15", end: "23:42", name: "Octopus Shorts – BLOK 5: Śmiech przez zęby", location: "Multikino, sala nr 10", duration: 87 },
+        { start: "23:59", end: "01:15", name: "Amputacja", location: "Klub B90", duration: 76 }
+      ],
+      "2025-08-08": [
+        { start: "12:45", name: "Nietoperz Benjamin", location:	"Spektrum",	end: "14:00", duration: 75 },
+        { start: "14:30",	name: "Octopus Shorts – BLOK 5: Śmiech przez zęby", location: 	"Spektrum",	end: "15:57", duration:	87 },
+        { start: "14:30",	name: "Alpha", location:	"Multikino, sala nr 10",	end: "16:38", duration: 128 },
+        { start: "14:45",	name: "Słodycz", location:	"Multikino, sala nr 9",	end: "16:18", duration: 93 },
+        { start: "15:15",	name: "Taksaska masakra piłą mechaniczną", location:	"Klub B90",	end: "16:38", duration: 83 },
+        { start: "15:30",	name: "O.C. i Stiggs", location:	"Kino IKM",	end: "17:19", duration: 109 },
+        { start: "16:30",	name: "Niech ciała się opalają", location:	"Drizzly Grizzly",	end: "18:02", duration: 92 },
+        { start: "16:30",	name: "Błysk diamentu śmierci", location:	"Spektrum",	end: "17:57", duration: 87 },
+        { start: "17:00",	name: "Dom starców", location:	"Multikino, sala nr 9",	end: "18:27", duration: 87 },
+        { start: "17:15",	name: "Donnie Darko", location:	"Multikino, sala nr 10",	end: "19:08", duration: 113 },
+        { start: "17:15",	name: "Wzgórze królików", location:	"Klub B90",	end: "18:47", duration: 92 },
+        { start: "18:00",	name: "Obcy: Ziemia", location:	"Kino IKM",	end: "19:03", duration: 63 },
+        { start: "19:00",	name: "Spotkanie z Brianem Trenchardem-Smithem", location:	"Drizzly Grizzly",	end: "19:00", duration: 60 },
+        { start: "18:30",	name: "Niedoręczony list", location:	"Spektrum",	end: "20:16", duration: 106 },
+        { start: "19:30",	name: "Królowe dragu i zombie", location:	"Multikino, sala nr 9",	end: "21:09", duration: 99 },
+        { start: "19:45",	name: "Lesbijska księżniczka z kosmosu", location:	"Multikino, sala nr 10",	end: "21:12", duration: 87 },
+        { start: "20:00",	name: "Dzień świstaka: na żywo czyta Maciej Orłoś", location:	"Klub B90",	end: "21:41", duration: 101 },
+        { start: "20:00",	name: "Barbarzyńcy", location:	"Kino IKM",	end: "21:27", duration: 87 },
+        { start: "20:15",	name: "Oblężenie bazy Gloria + spotkanie z Brianem Trenchardem-Smithem", location:	"Drizzly Grizzly",	end: "21:54", duration: 99 },
+        { start: "21:00",	name: "Stracone pokolenie + performans Ali Urwał", location:	"Spektrum",	end: "22:25", duration: 85 },
+        { start: "21:45",	name: "Zza grobu", location:	"Multikino, sala nr 9",	end: "23:45", duration: 120 },
+        { start: "22:00",	name: "DJ set DiV4", location:	"OCTO BAR OSIEMDZIESIĄTKA",	end: "22:00", duration: 90 },
+        { start: "22:00",	name: "Together", location:	"Multikino, sala nr 10",	end: "23:42", duration: 102 },
+        { start: "23:59",	name: "Oko za oko", location:	"Spektrum",	end: "01:40", duration: 101 }
+      ],
+      "2025-08-09": [
+        { start: "09:00", name: "Ośmiorniczki – zestaw krótkich metraży", location: "Spektrum", end: "09:40", duration: 40 },
+        { start: "13:00", name: "Falcon Lake", location: "Multikino, sala nr 9", end: "14:40", duration: 100 },
+        { start: "13:15", name: "Octopus Shorts – BLOK 3: Nie bój się zmiany", location: "Multikino, sala nr 10", end: "14:41", duration: 86 },
+        { start: "14:00", name: "Octopus Shorts – BLOK 2: Pod skórą", location: "Spektrum", end: "15:30", duration: 90 },
+        { start: "14:00", name: "Polowanie na indyki + spotkanie z Brianem Trenchardem-Smithem", location: "Klub B90", end: "15:33", duration: 93 },
+        { start: "14:00", name: "Podbój", location: "Drizzly Grizzly", end: "15:28", duration: 88 },
+        { start: "15:15", name: "Dom starców", location: "Multikino, sala nr 10", end: "16:42", duration: 87 },
+        { start: "15:30", name: "Octopus Shorts – BLOK 4: Fantazja jest od tego", location: "Multikino, sala nr 9", end: "16:53", duration: 83 },
+        { start: "16:00", name: "Jak produkować filmy w Gdańsku? – panel dyskusyjny", location: "IKM (sala warsztatowa)", end: "16:00", duration: 90 },
+        { start: "16:30", name: "Ogar Boga", location: "Spektrum", end: "18:02", duration: 92 },
+        { start: "16:30", name: "Rodzice chrzestni z Tokio", location: "Klub B90", end: "18:02", duration: 92 },
+        { start: "16:45", name: "Dziwna podróż: Historia Rocky Horror", location: "Drizzly Grizzly", end: "18:14", duration: 89 },
+        { start: "17:30", name: "Błysk diamentu śmierci", location: "Multikino, sala nr 10", end: "18:57", duration: 87 },
+        { start: "17:45", name: "Opowieść rybaka", location: "Multikino, sala nr 9", end: "19:28", duration: 103 },
+        { start: "18:00", name: "Kino dziwaczne… wykład Andrzeja Karalusa", location: "Luks Sfera", end: "18:00", duration: 90 },
+        { start: "18:30", name: "Słodycz", location: "Spektrum", end: "20:03", duration: 93 },
+        { start: "19:00", name: "Ten od serca", location: "Drizzly Grizzly", end: "20:57", duration: 117 },
+        { start: "19:30", name: "Młody Corey Gorey", location: "Klub B90", end: "21:00", duration: 90 },
+        { start: "20:00", name: "Lesbijska księżniczka z kosmosu", location: "Multikino, sala nr 10", end: "21:27", duration: 87 },
+        { start: "20:15", name: "Good Boy", location: "Multikino, sala nr 9", end: "21:27", duration: 72 },
+        { start: "21:00", name: "Donikąd + performans Maszyny", location: "Spektrum", end: "22:22", duration: 82 },
+        { start: "21:00", name: "Seans ukryty", location: "???", end: "22:40", duration: 100 },
+        { start: "22:00", name: "Niedoręczony list", location: "Multikino, sala nr 10", end: "23:46", duration: 106 },
+        { start: "22:15", name: "Zwierzę", location: "Multikino, sala nr 9", end: "23:53", duration: 98 },
+        { start: "23:59", name: "Niebezpieczne zwierzęta", location: "Spektrum", end: "01:37", duration: 98 }
+      ],
+      "2025-08-10": [
+        { start: "13:00", name:	"Niedoręczony list", location:	"Multikino, sala nr 10", end: "14:46", duration:		106 },
+        { start: "13:30", name:	"Spektrum", location:	"Spektrum", end: "15:56", duration:		146 },
+        { start: "14:00", name:	"Conan Barbarzyńca", location:	"Kino IKM", end: "16:09", duration:		129 },
+        { start: "15:15", name:	"Scala !!! albo niewiarygodnie dziwny wzlot i upadek najdzikszego kina i jak ukształtowało ...", location:	"Drizzly Grizzly", end: "16:51", duration:		96 },
+        { start: "15:30", name:	"Zwierzę", location:	"Multikino, sala nr 10", end: "17:08", duration:    98 },
+        { start: "16:30", name:	"Bandyci kontra BMX + spotkanie z Brianem Trenchardem-Smithem", location:	"Klub B90", end: "17:58", duration:		88 },
+        { start: "17:00", name:	"Octopus Shorts – BLOK 1: Jawa na śnie", location:	"Spektrum", end: "18:33", duration:		93 },
+        { start: "17:00", name:	"Wagon towarowy Bertha", location:	"Kino IKM", end: "18:28", duration:		88 },
+        { start: "17:30", name:	"Paprika", location:	"Drizzly Grizzly", end: "19:00", duration:		90 },
+        { start: "17:45", name:	"Ogar Boga", location:	"Multikino, sala nr 10", end: "19:17", duration:		92 },
+        { start: "19:15", name:	"Together", location:	"Spektrum", end: "20:57", duration:		102 },
+        { start: "19:30", name:	"Gala zamknięcia festiwalu i seans zamknięcia: Gorzki", location:	"Klub B90", end: "21:10", duration:		100 },
+        { start: "19:30", name:	"Człowiek ze złotym pistoletem", location:	"Kino IKM", end: "21:35", duration:		125 },
+        { start: "19:45", name:	"Królowe dragu i zombie", location:	"Multikino, sala nr 10", end: "21:24", duration:		99 },
+        { start: "20:00", name:	"Salo, czyli 120 dni Sodomy", location:	"Drizzly Grizzly", end: "21:57", duration:		117 },  
+        { start: "21:30", name:	"Dom starców", location:	"Spektrum", end: "22:57", duration:		87 },
+        { start: "22:00", name:	"Blob – zabójca z kosmosu", location:	"scrapYard", end: "23:26", duration:		86 },
+        { start: "22:00", name:	"Złe ziółko", location:	"Klub B90", end: "23:26", duration:		86 },
+        { start: "22:00", name:	"Słodycz", location:	"Multikino, sala nr 10", end: "23:33", duration:		93 },
+        { start: "23:59", name:	"Martwi przed świtem", location:	"Drizzly Grizzly", end: "01:31", duration:		92 }
+      ]
+    };
+
+    function parseTimeToMinutes(timeStr) {
+      const [h, m] = timeStr.split(":").map(Number);
+      return h * 60 + m;
+    }
+
+    function isFavorite(name) {
+      const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+      return favs.includes(name);
+    }
+
+    function toggleFavorite(name, icon, card) {
+      let favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+      if (favs.includes(name)) {
+        favs = favs.filter(e => e !== name);
+        card.classList.remove("favorited");
+        icon.textContent = "☆";
+      } else {
+        favs.push(name);
+        card.classList.add("favorited");
+        icon.textContent = "★";
+      }
+      localStorage.setItem("favorites", JSON.stringify(favs));
+    }
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function setQueryParam(param, value) {
+      const url = new URL(window.location);
+      url.searchParams.set(param, value);
+      window.history.replaceState({}, '', url);
+    }
+
+    function renderDayButtons() {
+      const container = document.getElementById("dayButtons");
+      container.innerHTML = "";
+
+      const currentDay = getQueryParam("day") || days[0].key;
+
+      days.forEach(({key, label}) => {
+        const btn = document.createElement("button");
+        btn.textContent = label;
+
+        if (key === currentDay) btn.classList.add("active");
+
+        btn.onclick = () => {
+          document.querySelectorAll(".day-buttons button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          setQueryParam("day", key);      // update URL
+          renderCalendar(key);            // re-render
+        };
+
+        container.appendChild(btn);
+      });
+
+      renderCalendar(currentDay);  // render day based on URL or default
+    }
+
+    function getUniqueLocations(events) {
+      const locSet = new Set();
+      events.forEach(e => locSet.add(e.location));
+      return Array.from(locSet);
+    }
+
+    function renderCalendar(dateKey) {
+      const events = eventsByDay[dateKey] || [];
+
+      // Extract unique locations from events
+      const locations = getUniqueLocations(events);
+
+      // Calculate min and max time from events or fallback to default 8:00 - 18:00
+      let times = events.length
+        ? events.map(e => [parseTimeToMinutes(e.start), parseTimeToMinutes(e.start) + e.duration]).flat()
+        : [8 * 60, 18 * 60];
+      const minTime = Math.min(...times);
+      const maxTime = Math.min(Math.max(...times), 24 * 60);
+
+
+      const totalSlots = Math.ceil((maxTime - minTime) / 15);
+      const totalHeight = totalSlots * X_PIXEL_PER_15_MIN;
+
+      // Render locations header
+      const locationsHeader = document.getElementById("locationsHeader");
+      locationsHeader.innerHTML = "";
+
+      locations.forEach((loc, i) => {
+        const locDiv = document.createElement("div");
+        locDiv.className = "location-name";
+        locDiv.textContent = loc;
+        locationsHeader.appendChild(locDiv);
+      });
+
+      // Render time column
+      const timeColumn = document.getElementById("timeColumn");
+      timeColumn.innerHTML = "";
+      timeColumn.style.height = totalHeight + "px";
+
+      for (let i = 0; i <= totalSlots; i++) {
+        const minutes = minTime + i * 15;
+        const hour = String(Math.floor(minutes / 60)).padStart(2, "0");
+        const min = String(minutes % 60).padStart(2, "0");
+
+        const label = document.createElement("div");
+        label.className = "time-label";
+        label.style.top = `${i * X_PIXEL_PER_15_MIN}px`;
+        label.textContent = `${hour}:${min}`;
+
+        timeColumn.appendChild(label);
+      }
+
+      // Render columns container
+      const columnsContainer = document.getElementById("columnsContainer");
+      columnsContainer.innerHTML = "";
+      columnsContainer.style.height = totalHeight + "px";
+
+      locations.forEach(location => {
+        const col = document.createElement("div");
+        col.className = "column";
+        col.style.height = totalHeight + "px";
+
+        // Add events in this location
+        events
+          .filter(e => e.location === location)
+          .forEach(event => {
+            const eventDiv = document.createElement("div");
+            eventDiv.className = "event";
+
+            const top = ((parseTimeToMinutes(event.start) - minTime) / 15) * X_PIXEL_PER_15_MIN;
+            const height = (event.duration / 15) * X_PIXEL_PER_15_MIN;
+
+            eventDiv.style.top = top + "px";
+            eventDiv.style.height = height + "px";
+
+            const star = document.createElement("span");
+            star.className = "star";
+            star.textContent = isFavorite(event.name) ? "★" : "☆";
+            eventDiv.classList.toggle("favorited", isFavorite(event.name));
+
+            star.onclick = () => toggleFavorite(event.name, star, eventDiv);
+
+            const title = document.createElement("div");
+            title.innerHTML = `<strong>${event.name}</strong><br><small>${event.start} - ${event.end}<br>${event.duration} min</small>`;
+
+            eventDiv.appendChild(title);
+            eventDiv.appendChild(star);
+            col.appendChild(eventDiv);
+          });
+
+        columnsContainer.appendChild(col);
+      });
+
+      // If no events (thus no locations), show message
+      if (locations.length === 0) {
+        const col = document.createElement("div");
+        col.className = "column";
+        col.style.height = totalHeight + "px";
+        col.style.textAlign = "center";
+        col.style.paddingTop = "40px";
+        col.textContent = "No events scheduled";
+        columnsContainer.appendChild(col);
+      }
+    }
+
+    // Footer year
+    document.getElementById("footerYear").textContent = new Date().getFullYear();
+
+    renderDayButtons();
+  </script>
+</body>
+</html>
