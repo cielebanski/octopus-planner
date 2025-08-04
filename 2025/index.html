@@ -598,8 +598,8 @@
             star.onclick = () => toggleFavorite(dateKey, event.name, star, eventDiv); 
 
             const title = document.createElement("div");
-            const isFav = favs[title] === true;
-            const favMarker = isFav ? `🐙<br>` : "";
+            const isFav = favs[event.name] === true;
+            const favMarker = isFav ? `🐙 ` : "";
             title.innerHTML = `<strong>${favMarker}${event.name}</strong><br><small>${event.start} - ${event.end}<br>${event.duration} min</small>`;
 
             eventDiv.appendChild(title);
