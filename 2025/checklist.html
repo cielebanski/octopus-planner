@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Events checklist</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #fefcf9;
+      color: #111;
+      font-size: 16px;
+    }
+
+    .page-wrapper {
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist-item {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        font-size: 14px;
+      }
+
+      .checklist-item input[type="checkbox"] {
+        transform: scale(1.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <h1>My Checklist</h1>
+    <ul id="checklist" class="checklist"></ul>
+  </div>
+
+  <script>
+    const checklistItems = [
+      "13 dni do wakacji", "13 dni do wakacji + spotkanie z twórcami", "1941", "Alpha", "Amputacja", "Ator, walczący orzeł", "Ballada piłą mechaniczną", "Bandyci kontra BMX + spotkanie z Brianem Trenchardem-Smithem", "Barbarzyńcy", "Blob – zabójca z kosmosu", "Bone Tomahawk", "Błysk diamentu śmierci", "Casting na lektora VHS HELL", "Conan Barbarzyńca", "Człowiek ze złotym pistoletem", "DJ set DiV4", "DJ set Martwi przed świtem", "Diuna", "Dom starców", "Donikąd + performans Maszyny", "Donnie Darko", "Dzień świstaka: na żywo czyta Maciej Orłoś", "Dziwna podróż: Historia Rocky Horror", "Falcon Lake", "Gala zamknięcia festiwalu i seans zamknięcia: Gorzki", "Good Boy", "Gotycka potańcówka. W hołdzie Tomaszowi Beksińskiemu", "How To Make A Mark With Your Horror Film – wykład Mike’a Chapmana", "Industry: przegląd studenckich krótkich metraży", "Jak produkować filmy w Gdańsku? – panel dyskusyjny", "Jak wyprodukować horror w Polsce? – panel dyskusyjny", "Kino dziwaczne… wykład Andrzeja Karalusa", "Kobieta-wąż", "Krew bohaterów", "Królowe dragu i zombie", "Lesbijska księżniczka z kosmosu", "MIŁO boli: rozwój filmu grozy własnym kosztem", "Martwi przed świtem", "Miecz i czarnoksiężnik", "Młody Corey Gorey", "Na podwójnej krawędzi", "Niebezpieczne zwierzęta", "Niech ciała się opalają", "Niedoręczony list", "Nierelane", "Nietoperz Benjamin", "O.C. i Stiggs", "Obcy: Ziemia", "Oblężenie bazy Gloria + spotkanie z Brianem Trenchardem-Smithem", "Octopus Shorts – BLOK 1: Jawa na śnie", "Octopus Shorts – BLOK 2: Pod skórą", "Octopus Shorts – BLOK 3: Nie bój się zmiany", "Octopus Shorts – BLOK 3: Nie bój się zmiany (na gorsze)", "Octopus Shorts – BLOK 4: Fantazja jest od tego", "Octopus Shorts – BLOK 5: Śmiech przez zęby", "Ogar Boga", "Oko za oko", "Opowieść rybaka", "Ośmiorniczki – z. krótkich metraży", "Palacz zwłok", "Paprika", "Perfect Blue", "Pierniczek okrutniczek 2: Mąka pańska", "Podbój", "Polowanie na indyki + spotkanie z Brianem Trenchardem-Smithem", "Pułapka", "Quiz Filmowy", "Rambo II", "Rodzice chrzestni z Tokio", "Salo, czyli 120 dni Sodomy", "Scala !!! albo niewiarygodnie dziwny wzlot i upadek najdzikszego kina i jak ukształtowało ...", "Seans otwarcia: Martwi przed świtem", "Seans ukryty", "Spotkanie z Brianem Trenchardem-Smithem", "Stracone pokolenie + performans Ali Urwał", "Stunt Rock", "Suspiria", "Słodycz", "Taksaska masakra piłą mechaniczną", "Ten od serca", "The Loved Ones", "The Primevals", "Together", "VHS: na ratunek!", "W blasku księżyca. Spotkanie poświęcone Tomaszowi Beksińskiemu", "Wagon towarowy Bertha", "Wzgórze królików", "Z wnętrza", "Zniknięcie", "Zwierzę", "Zza grobu", "Złe ziółko", "Łowca śmierci"
+    ];
+
+    const checklistKey = "octopusChecklist";
+
+    function loadChecklistState() {
+      return JSON.parse(localStorage.getItem(checklistKey) || '{}');
+    }
+
+    function saveChecklistState(state) {
+      localStorage.setItem(checklistKey, JSON.stringify(state));
+    }
+
+    function renderChecklist(items) {
+      const listEl = document.getElementById("checklist");
+      const savedState = loadChecklistState();
+      listEl.innerHTML = '';
+
+      items.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "checklist-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `check-${index}`;
+        checkbox.checked = !!savedState[item];
+
+        checkbox.addEventListener("change", () => {
+          savedState[item] = checkbox.checked;
+          saveChecklistState(savedState);
+        });
+
+        const label = document.createElement("label");
+        label.htmlFor = `check-${index}`;
+        label.textContent = item;
+
+        li.appendChild(checkbox);
+        li.appendChild(label);
+        listEl.appendChild(li);
+      });
+    }
+
+    renderChecklist(checklistItems);
+  </script>
+</body>
+</html>
