@@ -67,13 +67,55 @@
         font-size: 1.2rem;
       }
     }
+
+        .top-bar {
+      justify-content: space-between;
+      color: #0f0f0f;
+      flex-shrink: 0;
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    @media (min-width: 678px) {
+      .top-bar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 12px 20px;
+
+      }
+    }
+
+    .logo {
+      height: 50px;
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        height: 28px;
+        margin-bottom: 6px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="page-wrapper">
+    <div class="top-bar">
+      <div>
+        <img src="https://octopusfilmfestival.com/wp-content/themes/octopus2022/images/logo.png?v=1" alt="Octopus Festival Logo" class="logo">
+      </div>
+      <div class="day-buttons" id="dayButtons"></div>
+    </div>
+
     <h1>Octopus 2025 events checklist</h1>
     <ul id="checklist" class="checklist"></ul>
   </div>
+
+  <footer>
+    © <span id="footerYear"></span> Nordlys Adrian Cielebański · <a href="mailto:cielebanski@gmail.com">cielebanski@gmail.com</a>
+  </footer>
+  
   <script>
     const checklistItems = [
       "13 dni do wakacji", "13 dni do wakacji + spotkanie z twórcami", "1941", "Alpha", "Amputacja", "Ator, walczący orzeł", "Ballada piłą mechaniczną", "Bandyci kontra BMX + spotkanie z Brianem Trenchardem-Smithem", "Barbarzyńcy", "Blob – zabójca z kosmosu", "Bone Tomahawk", "Błysk diamentu śmierci", "Casting na lektora VHS HELL", "Conan Barbarzyńca", "Człowiek ze złotym pistoletem", "DJ set DiV4", "DJ set Martwi przed świtem", "Diuna", "Dom starców", "Donikąd + performans Maszyny", "Donnie Darko", "Dzień świstaka: na żywo czyta Maciej Orłoś", "Dziwna podróż: Historia Rocky Horror", "Falcon Lake", "Gala zamknięcia festiwalu i seans zamknięcia: Gorzki", "Good Boy", "Gotycka potańcówka. W hołdzie Tomaszowi Beksińskiemu", "How To Make A Mark With Your Horror Film – wykład Mike’a Chapmana", "Industry: przegląd studenckich krótkich metraży", "Jak produkować filmy w Gdańsku? – panel dyskusyjny", "Jak wyprodukować horror w Polsce? – panel dyskusyjny", "Kino dziwaczne… wykład Andrzeja Karalusa", "Kobieta-wąż", "Krew bohaterów", "Królowe dragu i zombie", "Lesbijska księżniczka z kosmosu", "MIŁO boli: rozwój filmu grozy własnym kosztem", "Martwi przed świtem", "Miecz i czarnoksiężnik", "Młody Corey Gorey", "Na podwójnej krawędzi", "Niebezpieczne zwierzęta", "Niech ciała się opalają", "Niedoręczony list", "Nierelane", "Nietoperz Benjamin", "O.C. i Stiggs", "Obcy: Ziemia", "Oblężenie bazy Gloria + spotkanie z Brianem Trenchardem-Smithem", "Octopus Shorts – BLOK 1: Jawa na śnie", "Octopus Shorts – BLOK 2: Pod skórą", "Octopus Shorts – BLOK 3: Nie bój się zmiany", "Octopus Shorts – BLOK 3: Nie bój się zmiany (na gorsze)", "Octopus Shorts – BLOK 4: Fantazja jest od tego", "Octopus Shorts – BLOK 5: Śmiech przez zęby", "Ogar Boga", "Oko za oko", "Opowieść rybaka", "Ośmiorniczki – z. krótkich metraży", "Palacz zwłok", "Paprika", "Perfect Blue", "Pierniczek okrutniczek 2: Mąka pańska", "Podbój", "Polowanie na indyki + spotkanie z Brianem Trenchardem-Smithem", "Pułapka", "Quiz Filmowy", "Rambo II", "Rodzice chrzestni z Tokio", "Salo, czyli 120 dni Sodomy", "Scala !!! albo niewiarygodnie dziwny wzlot i upadek najdzikszego kina i jak ukształtowało ...", "Seans otwarcia: Martwi przed świtem", "Seans ukryty", "Spotkanie z Brianem Trenchardem-Smithem", "Stracone pokolenie + performans Ali Urwał", "Stunt Rock", "Suspiria", "Słodycz", "Taksaska masakra piłą mechaniczną", "Ten od serca", "The Loved Ones", "The Primevals", "Together", "VHS: na ratunek!", "W blasku księżyca. Spotkanie poświęcone Tomaszowi Beksińskiemu", "Wagon towarowy Bertha", "Wzgórze królików", "Z wnętrza", "Zniknięcie", "Zwierzę", "Zza grobu", "Złe ziółko", "Łowca śmierci"
