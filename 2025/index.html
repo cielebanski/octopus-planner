@@ -430,6 +430,10 @@
       const [h, m] = timeStr.split(":").map(Number);
       return h * 60 + m;
     }
+    
+    function loadChecklistState() {
+      return JSON.parse(localStorage.getItem("octopusChecklist") || '{}');
+    }
 
     function isFavorite(dateKey, name) {
       const allFavs = JSON.parse(localStorage.getItem("favoritesByDay") || "{}");
@@ -512,6 +516,8 @@
 
     function renderCalendar(dateKey) {
       const events = eventsByDay[dateKey] || [];
+      const favs = loadChecklistState();
+    
 
       // Extract unique locations from events
       const locations = getUniqueLocations(events);
@@ -592,7 +598,9 @@
             star.onclick = () => toggleFavorite(dateKey, event.name, star, eventDiv); 
 
             const title = document.createElement("div");
-            title.innerHTML = `<strong>${event.name}</strong><br><small>${event.start} - ${event.end}<br>${event.duration} min</small>`;
+            const isFav = favs[title] === true;
+            const favMarker = isFav ? `🐙<br>` : "";
+            title.innerHTML = `<strong>${favMarker}${event.name}</strong><br><small>${event.start} - ${event.end}<br>${event.duration} min</small>`;
 
             eventDiv.appendChild(title);
             eventDiv.appendChild(star);
