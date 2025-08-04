@@ -182,37 +182,55 @@ const checklistKey = "octopusChecklist";
       localStorage.setItem(checklistKey, JSON.stringify(state));
     }
 
-    function renderChecklist(items) {
+    function renderChecklist(items, filter = "all") {
       const listEl = document.getElementById("checklist");
       const savedState = loadChecklistState();
       listEl.innerHTML = '';
-
-      items.forEach((item) => {
+    
+      const filteredItems = items.filter(item => {
+        if (filter === "checked") return savedState[item];
+        if (filter === "unchecked") return !savedState[item];
+        return true;
+      });
+    
+      filteredItems.forEach((item) => {
         const li = document.createElement("li");
         li.className = "checklist-item";
         if (savedState[item]) li.classList.add("checked");
-
+    
         const spanLabel = document.createElement("span");
         spanLabel.textContent = item;
-
+    
         const icon = document.createElement("span");
         icon.className = "octo-icon";
         icon.textContent = "🐙";
-
+    
         li.appendChild(spanLabel);
         li.appendChild(icon);
-
+    
         li.addEventListener("click", () => {
           const checked = li.classList.toggle("checked");
           savedState[item] = checked;
           saveChecklistState(savedState);
+          renderChecklist(checklistItems, currentFilter); // re-render after change
         });
-
+    
         listEl.appendChild(li);
       });
     }
 
-    renderChecklist(checklistItems);
+    let currentFilter = "all";
+    renderChecklist(checklistItems, currentFilter);
+
+    const toggleButtons = document.querySelectorAll(".filter-btn");
+    toggleButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        toggleButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        renderChecklist(checklistItems, currentFilter);
+      });
+    });
   </script>
 </body>
 </html>
