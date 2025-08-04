@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Events checklist</title>
+  <title>Octopus 2025 events</title>
   <style>
     html, body {
       margin: 0;
@@ -32,40 +32,53 @@
     }
 
     .checklist-item {
-      margin-bottom: 12px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      background-color: #fff;
+      border: 2px solid #262626;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
 
-    .checklist-item input[type="checkbox"] {
-      margin-right: 10px;
-      transform: scale(1.2);
-      cursor: pointer;
+    .checklist-item.checked {
+      background-color: #262626;
+      color: #fff;
+    }
+
+    .octo-icon {
+      font-size: 1.5rem;
+      user-select: none;
+      transition: transform 0.2s ease;
+    }
+
+    .checklist-item.checked .octo-icon {
+      transform: rotate(360deg);
     }
 
     @media (max-width: 600px) {
       body {
         font-size: 14px;
       }
-
-      .checklist-item input[type="checkbox"] {
-        transform: scale(1.1);
+      .octo-icon {
+        font-size: 1.2rem;
       }
     }
   </style>
 </head>
 <body>
   <div class="page-wrapper">
-    <h1>My Checklist</h1>
+    <h1>Octopus 2025 events checklist</h1>
     <ul id="checklist" class="checklist"></ul>
   </div>
-
   <script>
     const checklistItems = [
       "13 dni do wakacji", "13 dni do wakacji + spotkanie z twórcami", "1941", "Alpha", "Amputacja", "Ator, walczący orzeł", "Ballada piłą mechaniczną", "Bandyci kontra BMX + spotkanie z Brianem Trenchardem-Smithem", "Barbarzyńcy", "Blob – zabójca z kosmosu", "Bone Tomahawk", "Błysk diamentu śmierci", "Casting na lektora VHS HELL", "Conan Barbarzyńca", "Człowiek ze złotym pistoletem", "DJ set DiV4", "DJ set Martwi przed świtem", "Diuna", "Dom starców", "Donikąd + performans Maszyny", "Donnie Darko", "Dzień świstaka: na żywo czyta Maciej Orłoś", "Dziwna podróż: Historia Rocky Horror", "Falcon Lake", "Gala zamknięcia festiwalu i seans zamknięcia: Gorzki", "Good Boy", "Gotycka potańcówka. W hołdzie Tomaszowi Beksińskiemu", "How To Make A Mark With Your Horror Film – wykład Mike’a Chapmana", "Industry: przegląd studenckich krótkich metraży", "Jak produkować filmy w Gdańsku? – panel dyskusyjny", "Jak wyprodukować horror w Polsce? – panel dyskusyjny", "Kino dziwaczne… wykład Andrzeja Karalusa", "Kobieta-wąż", "Krew bohaterów", "Królowe dragu i zombie", "Lesbijska księżniczka z kosmosu", "MIŁO boli: rozwój filmu grozy własnym kosztem", "Martwi przed świtem", "Miecz i czarnoksiężnik", "Młody Corey Gorey", "Na podwójnej krawędzi", "Niebezpieczne zwierzęta", "Niech ciała się opalają", "Niedoręczony list", "Nierelane", "Nietoperz Benjamin", "O.C. i Stiggs", "Obcy: Ziemia", "Oblężenie bazy Gloria + spotkanie z Brianem Trenchardem-Smithem", "Octopus Shorts – BLOK 1: Jawa na śnie", "Octopus Shorts – BLOK 2: Pod skórą", "Octopus Shorts – BLOK 3: Nie bój się zmiany", "Octopus Shorts – BLOK 3: Nie bój się zmiany (na gorsze)", "Octopus Shorts – BLOK 4: Fantazja jest od tego", "Octopus Shorts – BLOK 5: Śmiech przez zęby", "Ogar Boga", "Oko za oko", "Opowieść rybaka", "Ośmiorniczki – z. krótkich metraży", "Palacz zwłok", "Paprika", "Perfect Blue", "Pierniczek okrutniczek 2: Mąka pańska", "Podbój", "Polowanie na indyki + spotkanie z Brianem Trenchardem-Smithem", "Pułapka", "Quiz Filmowy", "Rambo II", "Rodzice chrzestni z Tokio", "Salo, czyli 120 dni Sodomy", "Scala !!! albo niewiarygodnie dziwny wzlot i upadek najdzikszego kina i jak ukształtowało ...", "Seans otwarcia: Martwi przed świtem", "Seans ukryty", "Spotkanie z Brianem Trenchardem-Smithem", "Stracone pokolenie + performans Ali Urwał", "Stunt Rock", "Suspiria", "Słodycz", "Taksaska masakra piłą mechaniczną", "Ten od serca", "The Loved Ones", "The Primevals", "Together", "VHS: na ratunek!", "W blasku księżyca. Spotkanie poświęcone Tomaszowi Beksińskiemu", "Wagon towarowy Bertha", "Wzgórze królików", "Z wnętrza", "Zniknięcie", "Zwierzę", "Zza grobu", "Złe ziółko", "Łowca śmierci"
     ];
-
-    const checklistKey = "octopusChecklist";
+const checklistKey = "octopusChecklist";
 
     function loadChecklistState() {
       return JSON.parse(localStorage.getItem(checklistKey) || '{}');
@@ -80,26 +93,27 @@
       const savedState = loadChecklistState();
       listEl.innerHTML = '';
 
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         const li = document.createElement("li");
         li.className = "checklist-item";
+        if (savedState[item]) li.classList.add("checked");
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = `check-${index}`;
-        checkbox.checked = !!savedState[item];
+        const spanLabel = document.createElement("span");
+        spanLabel.textContent = item;
 
-        checkbox.addEventListener("change", () => {
-          savedState[item] = checkbox.checked;
+        const icon = document.createElement("span");
+        icon.className = "octo-icon";
+        icon.textContent = "🐙";
+
+        li.appendChild(spanLabel);
+        li.appendChild(icon);
+
+        li.addEventListener("click", () => {
+          const checked = li.classList.toggle("checked");
+          savedState[item] = checked;
           saveChecklistState(savedState);
         });
 
-        const label = document.createElement("label");
-        label.htmlFor = `check-${index}`;
-        label.textContent = item;
-
-        li.appendChild(checkbox);
-        li.appendChild(label);
         listEl.appendChild(li);
       });
     }
