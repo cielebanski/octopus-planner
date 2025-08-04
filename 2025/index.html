@@ -37,7 +37,7 @@
       flex-direction: column;
     }
     
-    @media (min-width: 678px) {
+    @media (min-width: 815px) {
       .top-bar {
         display: flex;
         flex-direction: row;
@@ -45,6 +45,24 @@
         padding: 12px 20px;
 
       }
+      .mobile {
+	      display: none;
+    	}
+        
+        .desktop {
+          display: inline-block;
+        }
+
+    }
+    
+    @media (max-width: 814px) {
+      .mobile {
+      	display: inline-block;
+      }
+      
+              .desktop {
+          display: none;
+        }
     }
 
     .logo {
@@ -177,7 +195,11 @@
       .column {
         width: 128px;
       }  
+     
     }
+    
+
+    
     .event {
       position: absolute;
       left: 10px;
@@ -228,15 +250,29 @@
       font-size: 0.625rem;
       margin: 10px 16px;
     }
+    
+    .page-link {
+      padding: 8px;
+      color: #262626;
+    }
+    
+    .mid {
+    	display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
   </style>
 </head>
 <body>
   <div class="page-wrapper">
 
   <div class="top-bar">
-    <div>
+    <div class="mid">
       <img src="https://octopusfilmfestival.com/wp-content/themes/octopus2022/images/logo.png?v=1" alt="Octopus Festival Logo" class="logo">
+      <a class="mobile page-link" href="checklist.html">Events checklist</a>
     </div>
+    <a class="desktop page-link" href="checklist.html">Events checklist</a>
     <div class="day-buttons" id="dayButtons"></div>
   </div>
 
