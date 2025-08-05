@@ -37,7 +37,7 @@
       flex-direction: column;
     }
     
-    @media (min-width: 815px) {
+    @media (min-width: 930px) {
       .top-bar {
         display: flex;
         flex-direction: row;
@@ -55,7 +55,7 @@
 
     }
     
-    @media (max-width: 814px) {
+    @media (max-width: 930px) {
       .mobile {
       	display: inline-block;
       }
@@ -76,9 +76,9 @@
       }
     }
 
-    .day-buttons button {
+    .day-buttons button, .filter-btn {
       margin-right: 10px;
-      padding: 8px 16px;
+      padding: 8px 12px;
       background-color: transparent;
       color: #0f0f0f;
       border: 2px solid #262626;
@@ -88,13 +88,13 @@
       transition: all 0.2s ease-in-out;
     }
     @media (max-width: 600px) {
-      .day-buttons button {
+      .day-buttons button, .filter-btn {
         margin-right: 4px;
         font-size: 8px;
       }
     }
     .day-buttons button:hover,
-    .day-buttons button.active {
+    .day-buttons button.active  {
       background-color: #262626;
       color: #fff;
     }
@@ -261,7 +261,15 @@
         justify-content: space-between;
         align-items: center;
     }
-    
+
+    .filter-btn.active {
+      background: #ffca0a !important;
+      color: #000 !important;
+    }
+
+    .btns {
+      display: flex;
+    }
   </style>
 </head>
 <body>
@@ -273,7 +281,14 @@
       <a class="mobile page-link" href="checklist.html">Events checklist</a>
     </div>
     <a class="desktop page-link" href="checklist.html">Events checklist</a>
-    <div class="day-buttons" id="dayButtons"></div>
+    <!-- <div class="btns"> -->
+      <div class="day-buttons" id="dayButtons">
+        <button class="filter-btn" onclick="toggleStarred()" id="toggleStarredBtn">
+          ★
+        </button>
+
+      </div>
+    <!-- </div> -->
   </div>
 
   <div class="calendar-wrapper">
@@ -307,6 +322,24 @@
       { label: "10.08", key: "2025-08-10" }
     ];
 
+    let starredOnly = getQueryParam("starred") === "true";
+    // get starred filter from URL
+
+    if (!starredOnly) {
+      document.getElementById("toggleStarredBtn").classList.remove("active"); 
+    } else {
+      document.getElementById("toggleStarredBtn").classList.add("active");
+    }
+
+
+    function toggleStarred() {
+      starredOnly = !starredOnly;
+      const button = document.getElementById("toggleStarredBtn");
+      button.classList.toggle("active", starredOnly);
+      const currentDay = getQueryParam("day") || days[0].key;
+      renderCalendar(currentDay);
+      setQueryParam("starred", starredOnly ? "true" : "false");
+    }
 
     // Sample events data
     const eventsByDay = {
@@ -508,9 +541,9 @@
     window.addEventListener('popstate', () => {
       const currentDay = getQueryParam("day") || days[0].key;
       
-      document.querySelectorAll(".day-buttons button").forEach(b => b.classList.remove("active"));
-      
-      const matchingBtn = [...document.querySelectorAll(".day-buttons button")].find(
+      document.querySelectorAll(".day-buttons .day").forEach(b => b.classList.remove("active"));
+
+      const matchingBtn = [...document.querySelectorAll(".day-buttons .day")].find(
         btn => btn.textContent === currentDay.slice(8, 10) + "." + currentDay.slice(5, 7)
       );
       if (matchingBtn) matchingBtn.classList.add("active");
@@ -520,18 +553,19 @@
 
     function renderDayButtons() {
       const container = document.getElementById("dayButtons");
-      container.innerHTML = "";
+      // container.innerHTML = "";
 
       const currentDay = getQueryParam("day") || days[0].key;
 
       days.forEach(({key, label}) => {
         const btn = document.createElement("button");
         btn.textContent = label;
+        btn.className = "day";
 
         if (key === currentDay) btn.classList.add("active");
 
         btn.onclick = () => {
-          document.querySelectorAll(".day-buttons button").forEach(b => b.classList.remove("active"));
+          document.querySelectorAll(".day-buttons .day").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
 
           setQueryParam("day", key);      // update URL
@@ -546,17 +580,45 @@
 
     function getUniqueLocations(events) {
       const locSet = new Set();
-      events.forEach(e => locSet.add(e.location));
+
+      events.forEach(e => {
+        locSet.add(e.location)
+      });
       return Array.from(locSet);
     }
 
     function renderCalendar(dateKey) {
-      const events = eventsByDay[dateKey] || [];
+      const isStarredFilter = starredOnly;
+      let events = eventsByDay[dateKey] || [];
       const favs = loadChecklistState();
     
+      if (isStarredFilter) {
+        // Filter events to only those that are starred
+        events = events.filter(e => isFavorite(dateKey, e.name));
+      }
 
       // Extract unique locations from events
       const locations = getUniqueLocations(events);
+
+      const timeColumn = document.getElementById("timeColumn");
+      const columnsContainer = document.getElementById("columnsContainer");
+      const locationsHeader = document.getElementById("locationsHeader");
+
+      if (locations.length === 0) {
+        // If no locations, show a message
+        locationsHeader.innerHTML = "";
+        timeColumn.innerHTML = "";
+        columnsContainer.innerHTML = "";
+        columnsContainer.innerHTML = "<strong>No locations available for this day. <br><br><br>Change filter.</strong>";
+        // columnsContainer.innerHTML = "";
+        timeColumn.style.height = "0px";
+        columnsContainer.style.height = "200px";
+        columnsContainer.style.marginTop = "50px";
+        return;
+      } else {
+        document.getElementById("locationsHeader").textContent = "";
+        columnsContainer.style.marginTop = "0px";
+      }
 
       // Calculate min and max time from events or fallback to default 8:00 - 18:00
       let times = events.length
@@ -571,7 +633,6 @@
       const totalHeight = totalSlots * X_PIXEL_PER_15_MIN;
 
       // Render locations header
-      const locationsHeader = document.getElementById("locationsHeader");
       locationsHeader.innerHTML = "";
 
       locations.forEach((loc, i) => {
@@ -582,7 +643,6 @@
       });
 
       // Render time column
-      const timeColumn = document.getElementById("timeColumn");
       timeColumn.innerHTML = "";
       timeColumn.style.height = totalHeight + "px";
 
@@ -603,7 +663,6 @@
       }
 
       // Render columns container
-      const columnsContainer = document.getElementById("columnsContainer");
       columnsContainer.innerHTML = "";
       columnsContainer.style.height = totalHeight + "px";
 
@@ -647,15 +706,15 @@
       });
 
       // If no events (thus no locations), show message
-      if (locations.length === 0) {
-        const col = document.createElement("div");
-        col.className = "column";
-        col.style.height = totalHeight + "px";
-        col.style.textAlign = "center";
-        col.style.paddingTop = "40px";
-        col.textContent = "No events scheduled";
-        columnsContainer.appendChild(col);
-      }
+      // if (locations.length === 0) {
+      //   const col = document.createElement("div");
+      //   col.className = "column";
+      //   col.style.height = totalHeight + "px";
+      //   col.style.textAlign = "center";
+      //   col.style.paddingTop = "40px";
+      //   col.textContent = "No events scheduled";
+      //   columnsContainer.appendChild(col);
+      // }
     }
 
     // Footer year
